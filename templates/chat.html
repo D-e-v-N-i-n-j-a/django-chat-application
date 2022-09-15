@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/all.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>CHAT</title>
+</head>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .chat-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .room-card {
+        width: 13rem;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 1rem;
+        border-radius: 10px;
+        background-color: #fff;
+        cursor: pointer;
+    }
+
+    .room_img {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+    }
+    .profile{
+        width:150px;
+        height:150px;
+        border-radius: 50%;
+    }
+</style>
+
+<body>
+
+    <!-- NAVIGATION-->
+    <div class="container-fluid">
+        <h1 class="text-center">AVAILABLE ROOMS</h1>
+       
+
+       {% if request.user.is_authenticated %}
+       <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+       aria-controls="offcanvasRight">{{request.user}}</button>
+       <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel">{{request.user}}</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <img class="rounded profile" src="{{request.user.profile.pic.url}}" alt="" srcset="">
+            <a href="{% url 'logout' %}" type="button" class="btn btn-danger">Logout</a>
+
+        </div>
+    </div>
+       {% endif %}
+    </div>
+    <div class="chat-container">
+        {% for x in room %}
+        <div class="room-card shadow">
+            <img class="room_img" src="{{x.img.url}}" alt="">
+            <a href="{% url 'room' x.id x.title %}">
+                <h2>{{x.title}}</h2>
+            </a>
+        </div>
+
+        {% endfor %}
+
+
+    </div>
+</body>
+<script src="{% static 'js/jquery-3.6.0.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.js' %}"></script>
+
+</html>

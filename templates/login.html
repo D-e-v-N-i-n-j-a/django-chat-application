@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAT ROOM</title>
+    <style>
+        body{
+            background-color: lightsalmon;
+            display: flex;
+            flex-direction: column;
+            justify-content:center;
+            align-items:center;
+            height: 90vh;
+        }
+        html{
+            scroll-behavior: smooth;
+        }
+        form{
+            display: flex;
+            flex-direction:column;
+            align-items:center;
+        }
+        form > input{
+            padding: 10px;
+            width: 200px;
+            outline: none;
+        }
+        form > button{
+            margin-top: 1rem;
+            width: 150px;
+            border: none;
+            padding:10px;
+            background: tomato;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+        <h1>DJANGO ROOM CHAT</h1>
+        <input type="text" name="username" id="username" placeholder="Username" required>
+        <input type="password" name="password" id="password" placeholder="password" required>
+        <button type="submit">LOGIN</button>
+
+    </form>
+</body>
+</html>

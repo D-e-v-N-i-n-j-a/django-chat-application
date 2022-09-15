@@ -1,0 +1,163 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/emojionearea.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/all.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script defer src="{% static 'js/jquery.min.js' %}"></script>
+    <script defer src="{% static 'js/emojionearea.min.js' %}"></script>
+
+    <title>Room</title>
+
+    <style>
+        body {
+            background: url('/static/img/bg-texture.png');
+            background-color: rgba(0, 0, 0, .9)
+        }
+
+        .chat_container {
+            width: 90%;
+            height: 80vh;
+            border: 1px solid pink;
+            margin: auto;
+            overflow-y: scroll;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .text{
+            display:flex;
+            align-items: center;
+            justify-content:end;
+        }
+        .profile{
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+        .chat-text{
+            text-align: end;
+        }
+        .card{
+            width:auto;
+        }
+        .send{
+            color: white;
+            border: none;   
+        }
+    </style>
+</head>
+
+<body>
+    <!-- END OF SCRIPT -->
+    
+   {% for x in room %}
+   
+   <div class="container mx-auto">
+    <h1 class="text-center my-3 text-light">{{x.title}} Chat Room</h1>
+</div>
+<div class="container mx-auto">
+    <div class="chat_container">
+        <div class="chat_area container-fluid" id="display">
+          
+            
+        
+            
+            
+        </div>
+        <form id="post-form" class="row g-0 m-0 container-fluid" >
+            {% csrf_token %}
+
+            <textarea id="message"></textarea>
+            <input type="submit" value="submit" >
+            <input type="hidden" name="room_id" class="form-control" id="room_id" value="{{x.id}}">
+
+            <!-- <div class="d-flex container">
+                <input type="text" name="message" class="form-control" id="message" placeholder="typing.........." required>
+                <button class="bg-primary" type="submit" id="send">SEND</button>
+            </div> -->
+        </form>
+    </div>
+</div>
+   {% endfor %}
+  
+</body>
+
+
+
+<script src="{% static 'js/app.js' %}"></script>
+<script src="{% static 'js/jquery-3.6.0.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.js' %}"></script>
+
+<script>
+
+    //EMOJI SECTIOIN
+    document.addEventListener('load',function(){
+        $('#message').emojioneArea();
+    })
+
+  setInterval(function(){
+    $.ajax({
+        type:"GET",
+        url:"/getMessages/{{room_}}/",
+        success:function(response){
+            console.log(response)
+            $("#display").empty()
+            for(var data in response.messages){
+               console.log(response.messages[data].text)
+              var temp = `<div class="text">
+                <div class="card my-2"> 
+                    <span class="chat-text">${response.messages[data].text}</span>    
+                </div>
+                <img class="profile" src="http://127.0.0.1:8000${response.messages[data].picture}" alt="">
+                <input type="hidden" name="user_id" class="form-control" id="user_id" value="{{m.user}}">
+                </div>`
+
+                $("#display").append(temp)
+            }
+            
+
+           
+        },
+        error:function(error){
+            console.log(error)
+        }
+    })
+  },1000)
+
+const form = document.getElementById('post-form')
+form.addEventListener('submit',function(event){
+    event.preventDefault();
+    console.log('it works')
+    console.log($("#user_id").val())
+    console.log($("#message").val())
+    $.ajax({
+        type:"POST",
+        url:"/send",
+        data:{
+            user:$("#user_id").val(),
+            room:$("#room_id").val(),
+            text:$("#message").val(),
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        },
+
+        success: function(data){
+            console.log(data)
+        }
+    }).done((e)=>{
+        //alert('send')
+    })
+    document.getElementById('message').value = ''
+});
+
+</script>
+</html
